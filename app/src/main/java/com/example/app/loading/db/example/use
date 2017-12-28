@@ -1,0 +1,80 @@
+
+   反射  反射   设计模式
+   IPC 进程通信  Binder源码  Service常驻后台  换肤  资源加载的源码  NDK 图片压缩加密上传
+
+    //网络访问会延时，一半的网络访问缓存是按照时间计算的，比如在规定的时间内只会拿缓存，
+    //如果超过规定的时间才会向后台发起请求。如果要确保获取的数据是及时的就最好不用第三方的自带缓存。
+
+    //每次都会请求数据，先去拿本地缓存，如果本地有先显示，然后获取到后台返回数据后，如果数据一样
+    //则不刷新界面，如果不一致刷新界面，加入缓存。
+
+    //有两个地方可以处理缓存
+    //2.1 回掉的里面 CallBack   单一职责问题，CallBack只是用来回掉多少有点不好，还有我们的数据缓存只是因为我们新闻类的问题
+    //大部分只要使用第三方缓存就行。
+    //2.2 引擎里面Enigin
+
+
+    //1.列表保存第一页   page=1 才保存，2.有些是保存最后所有
+
+    //下面这句写在Request.Builder 前面
+    private boolean cache=false;// ---------------》从get post请求带过来
+    private String finalUrl;//请求url--------->代表唯一标识，可以是其他
+
+    /**
+     * 网络请求获取到数据之后，会执行成功方法
+     *  2.每次获取到数据，先比对上一次的内容
+     */
+     private void HttpSuccess(){
+
+         //1.判断需不需要缓存，然后判断有没有
+         if(cache){
+             //需要缓存，从数据库拿缓存
+             //        IDaoSupport<CacheData> dataDaoSupport = DaoSupportFactory.getFactory().getDaoSupport(CacheData.class);
+             //        List<CacheData> cacheDataList = dataDaoSupport.querySupport()
+             //                //http: 报错 最好MD5加密下url
+             //                .selection("mUrlKey=?").selectionArgs(finalUrl).query();
+             //
+             //        if (cacheDataList.size()!=0){
+             //            //代表有数据
+             //            CacheData cacheData=cacheDataList.get(0);
+             //            String resultJson =cacheData.getResultJson();
+
+             String resultStirng = CacheDataUtil.getCacheResultJson(finalUrl);
+             if (!TextUtils.isEmpty(resultJson)){
+                 //需要缓存，而且数据库有缓存，直接去执行，执行成功回掉
+                 System.out.println("读到缓存");
+                 //                callBack.onSuccess(resultJson);
+             }
+         }
+
+
+         String  resultJson  = response.body().string;//返回的json
+         if (cache) { //缓存才会比对数据
+             //             List<CacheData> cacheDataList = dataDaoSupport.querySupport()
+             //                     .selection("mUrlKey=?").selectionArgs(finalUrl).query();
+             //             if (cacheDataList.size()!=0){
+             //                 //代表有数据
+             //                 CacheData cacheData=cacheDataList.get(0);
+             //                 String cacheResultJson =cacheData.getResultJson();
+             String cacheResultJson = CacheDataUtil.getCacheResultJson(finalUrl);
+             if (!TextUtils.isEmpty(resultJson)){
+                 //比对内容
+                 if (resultJson.equals(cacheResultJson)){
+                     //内容一样，不需要执行成功方法刷新界面----》网络请求的成功回掉不用执行
+                     System.out.println("数据和缓存一致的");
+                     return;
+
+                 }
+             }
+         }
+
+         //2.2执行成功方法
+         //         callBack.onSuccess(resultJson);
+         //         System.out.println("返回结构");
+         if (cache){
+             //2.3 缓存数据
+             //             dataDaoSupport.delete("mUrlKey=?",finalUrl);
+             //             dataDaoSupport.insert(new CacheData(finalUrl,resultJson));
+             CacheDataUtil.cacheData(finalUrl,resultJson);
+         }
+     }

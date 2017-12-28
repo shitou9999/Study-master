@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/shape_bg_loading_dialog"
+              android:gravity="center_horizontal"
+              android:minHeight="200dp"
+              android:minWidth="200dp"
+              android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/pb_loading_progress"
+        style="@style/style_loading__dialog_ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"/>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxEms="8"
+        android:maxLines="1"
+        android:paddingLeft="100dp"
+        android:paddingRight="100dp"
+        android:textColor="@color/color_text_loading_dialog"
+        tools:text="加载中..."/>
+
+</LinearLayout>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<LinearLayout-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/loading_dialog_shape"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!--android:minHeight="@dimen/dimen_440"-->
+    <!--android:minWidth="@dimen/dimen_440">-->
+
+    <!--<com.zhanyaa.cunli.wediget.loading.loadingview.LoadingView-->
+    <!--android:layout_width="@dimen/dimen_240"-->
+    <!--android:layout_height="@dimen/dimen_240"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_message"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/dimen_10"-->
+    <!--android:text="请稍后..."-->
+    <!--android:textSize="@dimen/dimen_42sp"-->
+    <!--android:textColor="@color/white"/>-->
+
+    <!--</LinearLayout>-->
+
