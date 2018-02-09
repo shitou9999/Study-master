@@ -14,7 +14,7 @@ import com.example.app.loading.dialog.AlertDialog;
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "file";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
             startService(new Intent(this, JobAwakenService.class));
         }*/
+
+
 
     }
 
