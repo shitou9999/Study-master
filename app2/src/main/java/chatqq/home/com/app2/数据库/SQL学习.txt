@@ -1,0 +1,383 @@
+
+语句：
+/*****************************************************************/
+*/读取数据
+SELECT 列名称 FROM 表名称
+SELECT * FROM 表名称----------->选取所有的列
+例如：
+SELECT LastName,FirstName FROM Persons
+
+*/去重操作
+SELECT DISTINCT 列名称 FROM 表名称
+例如：
+SELECT DISTINCT Company FROM Orders 
+
+*/条件查询
+SELECT 列名称 FROM 表名称 WHERE 列 运算符 值
+
+=	等于
+<>	不等于-在某些版本的 SQL中，操作符 <> 可以写为 !=。
+>	大于
+<	小于
+>=	大于等于
+<=	小于等于
+BETWEEN	在某个范围内
+LIKE	搜索某种模式
+
+例如：SELECT * FROM Persons WHERE FirstName='Bush'  
+	  SELECT * FROM Persons WHERE Year>1965
+
+*/条件查询
+AND(两个都成立就成立) 和 OR(一个成立就成立) 运算符
+例如：
+SELECT * FROM Persons WHERE FirstName='Thomas' AND LastName='Carter'
+SELECT * FROM Persons WHERE firstname='Thomas' OR lastname='Carter'
+
+结合 AND 和 OR 运算符，，，（使用圆括号来组成复杂的表达式）
+SELECT * FROM Persons WHERE (FirstName='Thomas' OR FirstName='William') AND LastName='Carter'
+
+*/排序
+ORDER BY 语句默认按照升序对记录进行排序
+例如：SELECT Company, OrderNumber FROM Orders ORDER BY Company DESC(逆序), OrderNumber ASC(顺序)
+/*****************************************************************/
+*/插入操作*/
+
+INSERT INTO 表名称 VALUES (值1, 值2,....)
+
+我们也可以指定所要插入数据的列：
+
+INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
+
+/*****************************************************************/
+*/Update 语句
+
+UPDATE 表名称 SET 列名称 = 新值 WHERE 列名称 = 某值
+
+例如：UPDATE Person SET Address = 'Zhongshan 23', City = 'Nanjing' WHERE LastName = 'Wilson'
+更新某一行中的若干列
+
+/*****************************************************************/
+*/删除
+DELETE FROM 表名称 WHERE 列名称 = 值
+删除某行
+DELETE FROM Person WHERE LastName = 'Wilson' 
+删除所有行，，，可以在不删除表的情况下删除所有的行。这意味着表的结构、属性和索引都是完整的
+
+DELETE FROM table_name
+DELETE * FROM table_name
+
+/*****************************************************************/
+*/TOP 子句
+TOP 子句用于规定要返回的记录的数目。。注释：并非所有的数据库系统都支持 TOP 子句。
+
+SELECT TOP number|percent column_name(s) FROM table_name
+例如：SELECT TOP 2 * FROM Persons
+选取50%的记录
+SELECT TOP 50 PERCENT * FROM Persons
+
+/*****************************************************************/
+LIKE 操作符用于在 WHERE 子句中搜索列中的指定模式。
+
+SELECT column_name(s)
+FROM table_name
+WHERE column_name LIKE pattern
+
+SELECT * FROM Persons
+WHERE City LIKE 'N%'，，，，已N开头的
+
+SELECT * FROM Persons
+WHERE City LIKE '%g'，，，，已g结尾的
+
+SELECT * FROM Persons
+WHERE City LIKE '%lon%'，，，，已包含的
+
+SELECT * FROM Persons
+WHERE City NOT LIKE '%lon%'，，，，不包含的
+
+通配符
+[charlist]	字符列中的任何单一字符
+[^charlist]或者[!charlist]不在字符列中的任何单一字符
+
+SELECT * FROM Persons
+WHERE City LIKE '[ALN]%'
+
+SELECT * FROM Persons
+WHERE City LIKE '[!ALN]%'
+
+/*****************************************************************/
+IN 操作符允许我们在 WHERE 子句中规定多个值
+
+SELECT column_name(s)
+FROM table_name
+WHERE column_name IN (value1,value2,...)
+
+SELECT * FROM Persons
+WHERE LastName IN ('Adams','Carter')
+
+
+/*****************************************************************/
+操作符 BETWEEN ... AND 会选取介于两个值之间的数据范围。这些值可以是数值、文本或者日期。
+*********什么范围*********
+SELECT column_name(s)
+FROM table_name
+WHERE column_name
+BETWEEN value1 AND value2
+
+*********不同的数据库对 BETWEEN...AND 操作符的处理方式是有差异的
+SELECT * FROM Persons
+WHERE LastName
+BETWEEN 'Adams' AND 'Carter'
+
+/*****************************************************************/
+**********Alias（别名）使SQL语句更简洁***********
+
+表名称别名
+SELECT column_name(s)
+FROM table_name
+AS alias_name
+
+SELECT po.OrderID, p.LastName, p.FirstName
+FROM Persons AS p, Product_Orders AS po
+WHERE p.LastName='Adams' AND p.FirstName='John'
+
+列的别名
+SELECT column_name AS alias_name
+FROM table_name
+
+SELECT LastName AS Family, FirstName AS Name
+FROM Persons
+/*****************************************************************/
+********** join 用于根据两个或多个表中的列之间的关系，从这些表中查询数据
+有时为了得到完整的结果，我们需要从两个或更多的表中获取结果。我们就需要执行 join。
+
+JOIN: 如果表中有至少一个匹配，则返回行
+INNER JOIN（内连接）
+LEFT JOIN: 即使右表中没有匹配，也从左表返回所有的行
+RIGHT JOIN: 即使左表中没有匹配，也从右表返回所有的行
+FULL JOIN: 只要其中一个表中存在匹配，就返回行
+
+SELECT Persons.LastName, Persons.FirstName, Orders.OrderNo
+FROM Persons
+INNER JOIN Orders
+ON Persons.Id_P = Orders.Id_P
+ORDER BY Persons.LastName
+
+关键字在表中存在至少一个匹配时返回行。如果 "Persons" 中的行在 "Orders" 中没有匹配，就不会列出这些行。
+
+*********INNER JOIN 关键字语法*********
+INNER JOIN 与 JOIN 是相同的。
+SELECT column_name(s)
+FROM table_name1
+INNER JOIN table_name2 
+ON table_name1.column_name=table_name2.column_name
+
+注释：在某些数据库中， LEFT JOIN 称为 LEFT OUTER JOIN。
+LEFT JOIN 关键字会从左表 (table_name1) 那里返回所有的行，即使在右表 (table_name2) 中没有匹配的行，返回空的
+SELECT column_name(s)
+FROM table_name1
+LEFT JOIN table_name2 
+ON table_name1.column_name=table_name2.column_name
+
+/*****************************************************************/
+*************UNION 用于合并两个或多个 SELECT 语句的结果集***********
+
+UNION 内部的 SELECT 语句必须拥有相同数量的列。
+列也必须拥有相似的数据类型。同时，每条 SELECT 语句中的列的顺序必须相同。
+默认地，UNION 操作符选取不同的值。如果允许重复的值，请使用 UNION ALL。
+
+SELECT column_name(s) FROM table_name1
+UNION
+SELECT column_name(s) FROM table_name2
+
+UNION 结果集中的列名总是等于 UNION 中第一个 SELECT 语句中的列名
+
+
+************去重操作(不是所有集)***************
+SELECT column_name(s) FROM table_name1
+UNION ALL
+SELECT column_name(s) FROM table_name2
+
+************列取所有***************
+SELECT column_name(s) FROM table_name1
+UNION ALL
+SELECT column_name(s) FROM table_name2
+
+/*****************************************************************/
+**************CREATE TABLE 语句用于创建数据库中的表************
+CREATE TABLE 表名称
+(
+列名称1 数据类型,
+列名称2 数据类型,
+列名称3 数据类型,
+....
+)
+
+CREATE TABLE Persons
+(
+Id_P int,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255)
+)
+
+/*****************************************************************/
+*************** 约束*******************
+NOT NULL
+UNIQUE 约束唯一标识数据库表中的每条记录。
+UNIQUE 和 PRIMARY KEY 约束均为列或列集合提供了唯一性的保证!!!!!!!
+PRIMARY KEY 拥有自动定义的 UNIQUE 约束。
+请注意，每个表可以有多个 UNIQUE 约束，但是每个表只能有一个 PRIMARY KEY 约束
+
+如果需要命名 UNIQUE 约束，以及为多个列定义 UNIQUE 约束，请使用下面的 SQL 语法
+CONSTRAINT uc_PersonID UNIQUE (Id_P,LastName)
+
+表创建时的约束和表已经创建完成以后的约束写法不一样
+
+/*****************************************************************/
+
+PRIMARY KEY 约束唯一标识数据库表中的每条记录。
+
+主键必须包含唯一的值。
+
+主键列不能包含 NULL 值。
+
+每个表都应该有一个主键，并且每个表只能有一个主键。
+CREATE TABLE Persons
+(
+Id_P int NOT NULL,
+LastName varchar(255) NOT NULL,
+City varchar(255),
+PRIMARY KEY (Id_P)
+)
+
+一个表中的 FOREIGN KEY 指向另一个表中的 PRIMARY KEY。
+
+FOREIGN KEY 约束用于预防破坏表之间连接的动作。
+FOREIGN KEY 约束也能防止非法数据插入外键列，因为它必须是它指向的那个表中的值之一。
+
+CREATE TABLE Orders
+(
+Id_O int NOT NULL,
+OrderNo int NOT NULL,
+Id_P int,
+PRIMARY KEY (Id_O),
+FOREIGN KEY (Id_P) REFERENCES Persons(Id_P)
+)
+
+/*****************************************************************/
+*********************CHECK 限制约束表和列的值***************************
+CHECK 约束用于限制列中的值的范围。
+
+如果对单个列定义 CHECK 约束，那么该列只允许特定的值。
+如果对一个表定义 CHECK 约束，那么此约束会在特定的列中对值进行限制。
+
+CREATE TABLE Persons
+(
+Id_P int NOT NULL,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255),
+CHECK (Id_P>0)
+)
+
+/*****************************************************************/
+********************** DEFAULT 约束用于向列中插入默认值 **************************
+如果没有规定其他的值，那么会将默认值添加到所有的新记录
+
+City varchar(255) DEFAULT 'Sandnes'
+
+/*****************************************************************/
+CREATE INDEX 语句用于在表中创建索引。
+在不读取整个表的情况下，索引使数据库应用程序可以更快地查找数据。
+**********************查的时候快了但是更新表的时间长了，因为索引也需要更新*************************
+注释：更新一个包含索引的表需要比更新一个没有索引的表更多的时间，
+这是由于索引本身也需要更新。因此，理想的做法是仅仅在常常被搜索的列（以及表）上面创建索引。
+CREATE INDEX index_name
+ON table_name (column_name) 注释："column_name" 规定需要索引的列。
+
+*/实例
+CREATE INDEX PersonIndex
+ON Person (LastName) 
+
+CREATE INDEX PersonIndex
+ON Person (LastName DESC) 降序索引
+
+CREATE INDEX PersonIndex
+ON Person (LastName, FirstName)  索引了多个列
+
+/*****************************************************************/
+通过使用 DROP 语句，可以轻松地删除索引、表和数据库
+
+注意是删除表还是删除表内的数据
+
+/*****************************************************************/
+ALTER TABLE 语句用于在已有的表中添加、修改或删除列。对表的操作
+
+ALTER TABLE table_name ADD column_name datatype
+
+ALTER TABLE table_name DROP COLUMN column_name
+
+/*****************************************************************/
+Auto-increment 会在新记录插入表中时生成一个唯一的数字。
+我们通常希望在每次插入新记录时，自动地创建主键字段的值。
+默认地，AUTO_INCREMENT 的开始值是 1，每条新记录递增 1。
+
+CREATE TABLE Persons
+(
+P_Id int NOT NULL AUTO_INCREMENT,
+LastName varchar(255) NOT NULL,
+FirstName varchar(255),
+Address varchar(255),
+City varchar(255),
+PRIMARY KEY (P_Id)
+)
+/*****************************************************************/
+
+*********************视图是基于SQL语句结果集的可视化的表********************************
+
+在 SQL 中，视图是基于 SQL 语句的结果集的可视化的表。
+
+视图包含行和列，就像一个真实的表。视图中的字段就是来自一个或多个数据库中的真实的表中的字段。
+我们可以向视图添加 SQL 函数、WHERE 以及 JOIN 语句，我们也可以提交数据，就像这些来自于某个单一的表。
+
+注释：数据库的设计和结构不会受到视图中的函数、where 或 join 语句的影响。
+
+CREATE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+
+注释：视图总是显示最近的数据。每当用户查询视图时，数据库引擎通过使用 SQL 语句来重建数据。
+
+/*****************************************************************/
+默认地，表的列可以存放 NULL 值。
+
+如果表中的某个列是可选的，那么我们可以在不向该列添加值的情况下插入新记录或更新已有的记录。这意味着该字段将以 NULL 值保存。
+
+NULL 值的处理方式与其他值不同。
+NULL 用作未知的或不适用的值的占位符。
+注释：无法比较 NULL 和 0；它们是不等价的。
+
+无法使用比较运算符来测试 NULL 值，比如 =, <, 或者 <>。
+我们必须使用 IS NULL 和 IS NOT NULL 操作符。
+
+提示：请始终使用 IS NULL 来查找 NULL 值。
+
+SELECT LastName,FirstName,Address FROM Persons
+WHERE Address IS NOT NULL
+
+/*****************************************************************/
+************************ NULL 函数(含有null值的数据的计算)*********************************
+SELECT ProductName,UnitPrice*(UnitsInStock+IFNULL(UnitsOnOrder,0))
+FROM Products
+
+SELECT ProductName,UnitPrice*(UnitsInStock+COALESCE(UnitsOnOrder,0))
+FROM Products
+
+/*****************************************************************/
+*******************数据类型************************
+CHAR(size)保存固定长度的字符串（可包含字母、数字以及特殊字符）。
+VARCHAR(size)	保存可变长度的字符串（可包含字母、数字以及特殊字符）。注释：如果值的长度大于 255，则被转换为 TEXT 类型。
+BLOB	用于 BLOBs (Binary Large OBjects)。存放最多 65,535 字节的数据。
